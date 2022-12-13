@@ -63,3 +63,30 @@ describe('GET api/articles', () => {
         })
     })
 })
+describe('GET /api/articles/:article_id', () => {
+    test('200: response with an article objects by provided articel id with properties: author, title, article_id, body, topic, created_at, votes', () => {
+        return request(app)
+        .get('/api/articles/1')
+        .expect(200)
+        .then(({body: { article }}) => {
+            expect(article).toEqual(expect.objectContaining({
+
+                article_id: expect.any(Number),
+                title: expect.any(String),
+                topic: expect.any(String),
+                author: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                
+            }))
+            expect(article.article_id).toBe(1);
+        })
+    })
+
+    // test('400: bad request when provided invalid article_id', () => {
+    //     return request(app)
+    //     .get('/api/articles/banana')
+    //     .expect(404)
+        
+    // })
+})
