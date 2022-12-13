@@ -2,8 +2,7 @@ const app = require("../app.js");
 const request = require('supertest');
 const db = require('../db/connection.js');
 const seed = require("../db/seeds/seed.js");
-const { topicData, userData, articleData, commentData } = require('../db/data/test-data/index.js')
-
+const { topicData, userData, articleData, commentData } = require('../db/data/test-data/index.js');
 afterAll(() => db.end());
 beforeEach(() => seed({ topicData, userData, articleData, commentData }))
 
@@ -25,7 +24,6 @@ describe('GET api/topics', () => {
         .get('/api/topics')
         .expect(200)
         .then(({body: {topics}}) => {
-            expect(topics).toBeInstanceOf(Array);
             expect(topics).toHaveLength(3);
             topics.forEach((topic) => {
                 expect(topic).toEqual(expect.objectContaining({
@@ -33,6 +31,34 @@ describe('GET api/topics', () => {
                     description: expect.any(String)
                 }))
             })
+        })
+    })
+})
+
+describe('GET api/articles', () => {
+    test('200 - responds with array of articles objects with following properties: author, title, article_id, topic, created_at, votes, comment_count', () => {
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body: {articles}}) => {
+            expect(articles).toHaveLength(12);
+            articles.forEach((article) => {
+                expect(article).toEqual(expect.objectContaining({
+
+                    article_id: expect.any(Number),
+                    comment_count: expect.any(String),
+                    title: expect.any(String),
+                    topic: expect.any(String),
+                    author: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    
+                }))
+            })
+               
+            expect(articles).toBeSortedBy('created_at', {
+                descending: true
+              });
         })
     })
 })

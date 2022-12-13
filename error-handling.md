@@ -29,15 +29,18 @@ Bear in mind, handling bad inputs from clients doesn't necessarily have to lead 
 
 ## Unavailable Routes
 
-### GET `/not-a-route`
+### GET `/not-a-route` 
 
-- Status: ???
+- Status:  404
 
 ---
 
 ## Available Routes
 
 ### GET `/api/topics`
+- 404: non-existant route
+- 200: happy path 
+- 500: server error
 
 -
 
