@@ -122,3 +122,63 @@ describe('GET /api/articles/:article_id', () => {
         })
     })
 })
+
+describe('GET /api/articles/:article_id/comments', () => {
+    test('200: Responds with: an array of comments for the given article_id; each comment should have the properties: comment_id, votes, created_at, author, body', () => {
+        return request(app)
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then(({body: { comments }}) => {
+          expect(comments).toHaveLength(11);
+          comments.forEach((comment) => {
+          expect(comment).toEqual(expect.objectContaining({
+
+                comment_id: expect.any(Number),
+                body: expect.any(String),
+                author: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                
+            }))
+        })
+        })
+    })
+    test('200: Comments should be served with the most recent comments first', () => {
+        return request(app)
+        .get('/api/articles/1/comments')
+        .then(({body: { comments }}) => {
+          expect(comments).toBeSortedBy('created_at', {
+            descending: true,
+          })
+        })
+    })
+    test('400: bad request when provided invalid article_id', () => {
+        return request(app)
+        .get('/api/articles/banana/comments')
+        .expect(400)
+        .then((response) => {
+            const msg = response.body.msg;
+            expect(msg).toBe('bad request')
+        })
+    })
+
+    test('404: valid but not-existant article_id', () => {
+        return request(app)
+        .get('/api/articles/10000/comments')
+        .expect(404)
+        .then((response) => {
+            const msg = response.body.msg;
+            expect(msg).toBe('not found')
+        })
+    })
+
+    test('404: not found path', () => {
+        return request(app)
+        .get('/api/articles/1/commnet')
+        .expect(404)
+        .then((response) => {
+            const msg = response.body.msg;
+            expect(msg).toBe('path not found')
+        })
+    })
+})
