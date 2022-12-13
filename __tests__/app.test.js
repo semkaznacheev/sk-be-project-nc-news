@@ -50,7 +50,6 @@ describe('GET api/articles', () => {
                     title: expect.any(String),
                     topic: expect.any(String),
                     author: expect.any(String),
-                    body: expect.any(String),
                     created_at: expect.any(String),
                     votes: expect.any(Number),
                     
