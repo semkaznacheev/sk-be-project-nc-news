@@ -63,7 +63,7 @@ describe('GET api/articles', () => {
     })
 })
 describe('GET /api/articles/:article_id', () => {
-    test('200: response with an article objects by provided articel id with properties: author, title, article_id, body, topic, created_at, votes', () => {
+    test('200: response with an article object by provided articel id with properties: author, title, article_id, body, topic, created_at, votes', () => {
         return request(app)
         .get('/api/articles/1')
         .expect(200)

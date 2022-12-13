@@ -1,13 +1,13 @@
 
-const handlerError404 = (req, res, next) => {
+const handle404 = (req, res, next) => {
     res.status(404).send({ msg: "path not found"})
 }
 
-const handlerError500 = (err, req, res, next) => {
+const handle500 = (err, req, res, next) => {
     res.status(500).send({msg: "server error"})
 }
 
-const handlerError400 = (err, req, res, next) => {
+const handle400 = (err, req, res, next) => {
     if (err.code === "22P02") {
     res.status(400).send({msg: "bad request"})
     } else {
@@ -24,4 +24,4 @@ const customErrorHandler = (err, req, res, next) => {
 }
 
 
-module.exports = {handlerError404, handlerError500, handlerError400, customErrorHandler}
+module.exports = {handle404, handle500, handle400, customErrorHandler}
