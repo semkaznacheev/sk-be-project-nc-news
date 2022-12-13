@@ -62,3 +62,63 @@ describe('GET api/articles', () => {
         })
     })
 })
+describe('GET /api/articles/:article_id', () => {
+    test('200: response with an article object by provided articel id with properties: author, title, article_id, body, topic, created_at, votes', () => {
+        return request(app)
+        .get('/api/articles/1')
+        .expect(200)
+        .then(({body: { article }}) => {
+            expect(article).toEqual(expect.objectContaining({
+
+                article_id: expect.any(Number),
+                body: expect.any(String),
+                title: expect.any(String),
+                topic: expect.any(String),
+                author: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                
+            }))
+            expect(article).toEqual(
+                {
+                    article_id: 1,
+                    title: "Living in the shadow of a great man",
+                    topic: "mitch",
+                    author: "butter_bridge",
+                    body: "I find this existence challenging",
+                    created_at: "2020-07-09T20:11:00.000Z",
+                    votes: 100,
+                  }
+            )
+            expect(article.article_id).toBe(1);
+        })
+    })
+
+    test('400: bad request when provided invalid article_id', () => {
+        return request(app)
+        .get('/api/articles/banana')
+        .expect(400)
+        .then((response) => {
+            const msg = response.body.msg;
+            expect(msg).toBe('bad request')
+        })
+    })
+    test('404: valid but not-existant article_id', () => {
+        return request(app)
+        .get('/api/articles/10000')
+        .expect(404)
+        .then((response) => {
+            const msg = response.body.msg;
+            expect(msg).toBe('not found')
+        })
+    })
+    test('404: not found path', () => {
+        return request(app)
+        .get('/api/banana/1')
+        .expect(404)
+        .then((response) => {
+            const msg = response.body.msg;
+            expect(msg).toBe('path not found')
+        })
+    })
+})
