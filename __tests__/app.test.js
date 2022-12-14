@@ -172,3 +172,29 @@ describe('GET /api/articles/:article_id/comments', () => {
         })
     })
 })
+describe('POST /api/articles/:article_id/comments', () => {
+    test('201: Responds with posted comment when added new comment ', () => {
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send({
+            "username":  "butter_bridge",
+            "body": "This article is awesome!"
+        })
+        .expect(201)
+        .then(({body}) => {
+          expect(body).toEqual(expect.objectContaining({
+            comment:
+            {
+                comment_id: expect.any(Number),
+                body: expect.any(String),
+                votes: expect.any(Number),
+                author: expect.any(String),
+                article_id: expect.any(Number),
+                created_at: expect.any(String),  
+          }
+        }
+          ))
+          
+        })
+    })
+})

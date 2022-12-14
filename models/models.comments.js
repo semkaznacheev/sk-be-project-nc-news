@@ -7,6 +7,14 @@ const selectCommentsById = (article_id) => {
   })
 }
 
+const addNewComment = (req) => {
+    const { article_id } = req.params;
+    const { username, body } = req.body;
+    return db.query(`INSERT INTO comments(author, body, article_id) VALUES ($1, $2, $3) RETURNING *`, [username, body, article_id])
+    .then(({rows}) => {
+        return rows[0];
+    })
+}
 
 
 
@@ -18,4 +26,5 @@ const selectCommentsById = (article_id) => {
 
 
 
-module.exports = { selectCommentsById }
+
+module.exports = { selectCommentsById, addNewComment }
