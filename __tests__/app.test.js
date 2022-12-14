@@ -112,15 +112,6 @@ describe('GET /api/articles/:article_id', () => {
             expect(msg).toBe('not found')
         })
     })
-    test('404: not found path', () => {
-        return request(app)
-        .get('/api/banana/1')
-        .expect(404)
-        .then((response) => {
-            const msg = response.body.msg;
-            expect(msg).toBe('path not found')
-        })
-    })
 })
 
 describe('GET /api/articles/:article_id/comments', () => {
@@ -172,13 +163,13 @@ describe('GET /api/articles/:article_id/comments', () => {
         })
     })
 
-    test('404: not found path', () => {
+    test('200: responds with empty array for an existant article_id that has no comments', () => {
         return request(app)
-        .get('/api/articles/1/commnet')
-        .expect(404)
-        .then((response) => {
-            const msg = response.body.msg;
-            expect(msg).toBe('path not found')
+        .get('/api/articles/2/comments')
+        .expect(200)
+        .then(({body: { comments }}) => {
+            console.log(comments)
+            expect(comments).toHaveLength(0);
         })
     })
 })

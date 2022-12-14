@@ -23,6 +23,16 @@ const selectArticleById = (article_id) => {
   })
 }
 
+const checkIfArticleExist = (article_id) => {
+  return db.query('SELECT * FROM articles WHERE article_id = $1', [article_id])
+  .then(({rowCount}) => {
+    if (rowCount === 0) {
+       return Promise.reject({msg: "not found", status: 404})
+    } else {
+       return true;
+    }
+  })
+}
 
 
 
@@ -30,4 +40,6 @@ const selectArticleById = (article_id) => {
 
 
 
-module.exports = { selectArticles, selectArticleById }
+
+
+module.exports = { selectArticles, selectArticleById, checkIfArticleExist }
