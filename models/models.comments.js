@@ -7,6 +7,17 @@ const selectCommentsById = (article_id) => {
   })
 }
 
+const addNewComment = (req) => {
+    const { article_id } = req.params;
+    const { username, body } = req.body;
+    return db.query(`INSERT INTO comments(author, body, article_id) VALUES ($1, $2, $3) RETURNING *`, [username, body, article_id])
+    .then((results) => {
+      if (results.rowCount === 0) {
+        return Promise.reject({msg: "not found", status: 404 })
+    }
+    return results.rows[0];
+    })
+}
 
 
 
@@ -18,4 +29,5 @@ const selectCommentsById = (article_id) => {
 
 
 
-module.exports = { selectCommentsById }
+
+module.exports = { selectCommentsById, addNewComment }

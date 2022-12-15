@@ -172,3 +172,85 @@ describe('GET /api/articles/:article_id/comments', () => {
         })
     })
 })
+describe('POST /api/articles/:article_id/comments', () => {
+    test('201: Responds with posted comment when added new comment ', () => {
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send({
+            "username":  "butter_bridge",
+            "body": "This article is awesome!"
+        })
+        .expect(201)
+        .then(({body}) => {
+          expect(body).toEqual(expect.objectContaining({
+            comment:
+            {
+                comment_id: expect.any(Number),
+                body: "This article is awesome!",
+                votes: 0,
+                author: "butter_bridge",
+                article_id: 1,
+                created_at: expect.any(String),  
+          }
+        }
+          ))
+          
+        })
+    })
+    test('400: bad request when provided invalid article_id', () => {
+        return request(app)
+        .post('/api/articles/banana/comments')
+        .send({
+            "username":  "butter_bridge",
+            "body": "This article is awesome!"
+        })
+        .expect(400)
+    })
+    test('400: bad request when there is no body provided', () => {
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send({
+            "username":  "butter_bridge"
+        })
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe("bad request")
+    })
+    })
+    test('400: bad request when there is no username', () => {
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send({
+            "body": "This article is awesome!"
+        })
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe("bad request")
+    })
+    })
+    test('404: valid but non-existant article_id ', () => {
+        return request(app)
+        .post('/api/articles/1000/comments')
+        .send({
+            "body": "This article is awesome!",
+            "username":  "butter_bridge"
+        })
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe("not found")
+    })
+    })
+    test('404: non-existant username ', () => {
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send({
+            "body": "This article is awesome!",
+            "username":  "non_existant_user"
+        })
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe("not found")
+    })
+    })
+
+})
