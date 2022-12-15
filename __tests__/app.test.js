@@ -35,32 +35,109 @@ describe('GET api/topics', () => {
     })
 })
 
-describe('GET api/articles', () => {
-    test('200 - responds with array of articles objects with following properties: author, title, article_id, topic, created_at, votes, comment_count', () => {
-        return request(app)
-        .get('/api/articles')
-        .expect(200)
-        .then(({body: {articles}}) => {
-            expect(articles).toHaveLength(12);
-            articles.forEach((article) => {
-                expect(article).toEqual(expect.objectContaining({
+describe.only('GET api/articles', () => {
+    // test('200 - responds with array of articles objects with following properties: author, title, article_id, topic, created_at, votes, comment_count', () => {
+    //     return request(app)
+    //     .get('/api/articles')
+    //     .expect(200)
+    //     .then(({body: {articles}}) => {
+    //         expect(articles).toHaveLength(12);
+    //         articles.forEach((article) => {
+    //             expect(article).toEqual(expect.objectContaining({
 
-                    article_id: expect.any(Number),
-                    comment_count: expect.any(String),
-                    title: expect.any(String),
-                    topic: expect.any(String),
-                    author: expect.any(String),
-                    created_at: expect.any(String),
-                    votes: expect.any(Number),
+    //                 article_id: expect.any(Number),
+    //                 comment_count: expect.any(String),
+    //                 title: expect.any(String),
+    //                 topic: expect.any(String),
+    //                 author: expect.any(String),
+    //                 created_at: expect.any(String),
+    //                 votes: expect.any(Number),
                     
-                }))
-            })
+    //             }))
+    //         })
                
-            expect(articles).toBeSortedBy('created_at', {
+    //         expect(articles).toBeSortedBy('created_at', {
+    //             descending: true
+    //           });
+    //     })
+    // })
+     test('200 - returns articles with sorted_by=any valid column ', () => {
+       return request(app)
+        .get('/api/articles?sort_by=author')
+        .expect(200)
+        .then(({ body: { articles }}) => {
+            expect(articles).toBeSortedBy('author', {
                 descending: true
-              });
+            });
         })
-    })
+     })
+     test('400 - when provided invalid sort_by keyword', () => {
+        return request(app)
+         .get('/api/articles?sort_by=bananas')
+         .expect(400)
+         .then(({ body: { msg }}) => {
+             expect(msg).toBe('bad request');
+         })
+      })
+      test('200 - returns articles with order_by=DESC as default ', () => {
+        return request(app)
+         .get('/api/articles')
+         .expect(200)
+         .then(({ body: { articles }}) => {
+             expect(articles).toBeSortedBy('created_at', {
+                 descending: true
+             });
+         })
+      })
+
+      test('200 - returns articles with order_by=DESC/ASC', () => {
+        return request(app)
+         .get('/api/articles?order=asc')
+         .expect(200)
+         .then(({ body: { articles }}) => {
+             expect(articles).toBeSortedBy('created_at', {
+                 descending: false
+             });
+         })
+      })
+
+      test('400 - when provided invalid order keyword', () => {
+        return request(app)
+         .get('/api/articles?order=123dsa')
+         .expect(400)
+         .then(({ body: { msg }}) => {
+             expect(msg).toBe('bad request');
+         })
+      })
+
+      test('200 - returns articles with topic=any valid topic', () => {
+        return request(app)
+         .get('/api/articles?topic=cats')
+         .expect(200)
+         .then(({ body: { articles }}) => {
+             expect(articles).toEqual([
+                {
+                article_id: 5,
+                title: "UNCOVERED: catspiracy to bring down democracy",
+                topic: "cats",
+                author: "rogersop",
+                comment_count: "2",
+                created_at: "2020-08-03T13:14:00.000Z",
+                votes: 0,
+              }
+            ])
+         })
+      })
+    //   test('404 - when provided non-existant topic keyword', () => {
+    //     return request(app)
+    //      .get('/api/articles?topic=dog')
+    //      .expect(404)
+    //      .then(({ body: { msg }}) => {
+    //          expect(msg).toBe('not found');
+    //      })
+    //   })
+      
+
 })
 describe('GET /api/articles/:article_id', () => {
     test('200: response with an article object by provided articel id with properties: author, title, article_id, body, topic, created_at, votes', () => {

@@ -1,15 +1,34 @@
 const db = require('../db/connection.js');
 
-const selectArticles = () => {
-  return db.query(`SELECT articles.article_id, COUNT(comments.comment_id) AS comment_count, title, topic, articles.author,  articles.created_at, articles.votes
+const selectArticles = (sort_by = 'created_at', order = 'desc', topic) => {
+  const validSortByQueries = ['title', 'topic', 'author', 'body', 'created_at', 'votes', 'article_id'];
+  const validOrderByQueries = ['asc', 'desc'];
+
+  if (!validSortByQueries.includes(sort_by) || !validOrderByQueries.includes(order)){
+     return Promise.reject({status: 400, msg: 'bad request'})
+  }
+
+  let queryString = `SELECT articles.article_id, COUNT(comments.comment_id) AS comment_count, title, topic, articles.author,  articles.created_at, articles.votes
   FROM articles
   LEFT JOIN comments ON comments.article_id = articles.article_id
+  WHERE topic = $1
   GROUP BY articles.article_id
-  ORDER BY created_at DESC;
-  `)
-  .then(({rows: articles}) => {
+  ORDER BY ${sort_by} ${order}
+  ;`
+  
+  // WHERE topic = ${topic}
+  return db.query(queryString, [topic]).then(({rows: articles}) => {
     return articles;
   })
+  // return db.query(`SELECT articles.article_id, COUNT(comments.comment_id) AS comment_count, title, topic, articles.author,  articles.created_at, articles.votes
+  // FROM articles
+  // LEFT JOIN comments ON comments.article_id = articles.article_id
+  // GROUP BY articles.article_id
+  // ORDER BY created_at DESC;
+  // `)
+  // .then(({rows: articles}) => {
+  //   return articles;
+  // })
 }
 
 const selectArticleById = (article_id) => {
