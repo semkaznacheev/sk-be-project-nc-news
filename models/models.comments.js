@@ -11,8 +11,11 @@ const addNewComment = (req) => {
     const { article_id } = req.params;
     const { username, body } = req.body;
     return db.query(`INSERT INTO comments(author, body, article_id) VALUES ($1, $2, $3) RETURNING *`, [username, body, article_id])
-    .then(({rows}) => {
-        return rows[0];
+    .then((results) => {
+      if (results.rowCount === 0) {
+        return Promise.reject({msg: "not found", status: 404 })
+    }
+    return results.rows[0];
     })
 }
 

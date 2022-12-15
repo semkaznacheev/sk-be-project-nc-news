@@ -17,10 +17,12 @@ const getCommentsById = (req, res, next) => {
 }
 
 const postNewComment = (req, res, next) => {
-   
     addNewComment(req).then((comment) => {
       res.status(201).send({comment})
     })
+    .catch((err) => {
+        next(err);
+})
     
 }
 

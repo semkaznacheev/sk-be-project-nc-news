@@ -8,7 +8,7 @@ const handle500 = (err, req, res, next) => {
 }
 
 const handle400 = (err, req, res, next) => {
-    if (err.code === "22P02") {
+    if (err.code === "22P02" || err.code === "23502") {
     res.status(400).send({msg: "bad request"})
     } else {
         next(err);
@@ -23,5 +23,10 @@ const customErrorHandler = (err, req, res, next) => {
     }
 }
 
+const handlePSQL404 = (err, req, res, next) => {
+    if (err.code === '23503') {
+        res.status(404).send({msg: "not found"})
+    }
+}
 
-module.exports = {handle404, handle500, handle400, customErrorHandler}
+module.exports = {handle404, handle500, handle400, customErrorHandler, handlePSQL404}
