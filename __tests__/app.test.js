@@ -185,9 +185,9 @@ describe('POST /api/articles/:article_id/comments', () => {
           expect(body).toEqual(expect.objectContaining({
             comment:
             {
-                comment_id: 19,
+                comment_id: expect.any(Number),
                 body: "This article is awesome!",
-                votes: expect.any(Number),
+                votes: 0,
                 author: "butter_bridge",
                 article_id: 1,
                 created_at: expect.any(String),  
@@ -234,6 +234,18 @@ describe('POST /api/articles/:article_id/comments', () => {
         .send({
             "body": "This article is awesome!",
             "username":  "butter_bridge"
+        })
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe("not found")
+    })
+    })
+    test('404: non-existant username ', () => {
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send({
+            "body": "This article is awesome!",
+            "username":  "non_existant_user"
         })
         .expect(404)
         .then((response) => {
