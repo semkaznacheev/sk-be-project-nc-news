@@ -252,5 +252,68 @@ describe('POST /api/articles/:article_id/comments', () => {
             expect(response.body.msg).toBe("not found")
     })
     })
-
+})
+describe('PATCH /api/articles/:article_id', () => {
+    test('200: Responds with an article object with updated votes', () => {
+        return request(app)
+        .patch('/api/articles/1/')
+        .send({ inc_votes : - 50 })
+        .expect(200)
+        .then(({body}) => {
+          expect(body).toEqual(expect.objectContaining(
+            { article:
+                {   
+                    article_id: 1,
+                    title: "Living in the shadow of a great man",
+                    topic: "mitch",
+                    author: "butter_bridge",
+                    body: "I find this existence challenging",
+                    created_at: expect.any(String),
+                    votes: 50,
+                  }
+            }
+          )
+          )
+          
+        })
+        
+    })
+    test('400: when provided an invalid article_id', () => {
+        return request(app)
+        .patch('/api/articles/banana/')
+        .send({ inc_votes : - 50 })
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe("bad request")
+        })
+        
+    })
+    test('404: valid but non-existant article_id ', () => {
+        return request(app)
+        .patch('/api/articles/10000')
+        .send({ inc_votes : - 50 })
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe("not found")
+    })
+})
+    test('400: bad request when there is no inc_votes property provided', () => {
+        return request(app)
+        .patch('/api/articles/1')
+        .send({
+        })
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe("bad request")
+    })
+})
+    test('400: bad request when invalid inc_votes value provided', () => {
+        return request(app)
+        .patch('/api/articles/1')
+        .send({ inc_votes : "three" })
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe("bad request")
+    })
+    })
 })

@@ -34,6 +34,19 @@ const checkIfArticleExist = (article_id) => {
   })
 }
 
+const updateArticleById = (inc_votes, article_id) => {
+   return db.query(`
+   UPDATE articles 
+   SET votes = votes + $1
+   WHERE article_id = $2
+   RETURNING * ;`, [inc_votes, article_id])
+   .then((results) => {
+    if (results.rowCount === 0) {
+      return Promise.reject({msg: "not found", status: 404 })
+  }
+  return results.rows[0];
+  })
+}
 
 
 
@@ -42,4 +55,5 @@ const checkIfArticleExist = (article_id) => {
 
 
 
-module.exports = { selectArticles, selectArticleById, checkIfArticleExist }
+
+module.exports = { selectArticles, selectArticleById, checkIfArticleExist, updateArticleById}
