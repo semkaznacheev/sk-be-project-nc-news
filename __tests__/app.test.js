@@ -35,32 +35,32 @@ describe('GET api/topics', () => {
     })
 })
 
-describe.only('GET api/articles', () => {
-    // test('200 - responds with array of articles objects with following properties: author, title, article_id, topic, created_at, votes, comment_count', () => {
-    //     return request(app)
-    //     .get('/api/articles')
-    //     .expect(200)
-    //     .then(({body: {articles}}) => {
-    //         expect(articles).toHaveLength(12);
-    //         articles.forEach((article) => {
-    //             expect(article).toEqual(expect.objectContaining({
+describe('GET api/articles', () => {
+    test('200 - responds with array of articles objects with following properties: author, title, article_id, topic, created_at, votes, comment_count', () => {
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body: {articles}}) => {
+            expect(articles).toHaveLength(12);
+            articles.forEach((article) => {
+                expect(article).toEqual(expect.objectContaining({
 
-    //                 article_id: expect.any(Number),
-    //                 comment_count: expect.any(String),
-    //                 title: expect.any(String),
-    //                 topic: expect.any(String),
-    //                 author: expect.any(String),
-    //                 created_at: expect.any(String),
-    //                 votes: expect.any(Number),
+                    article_id: expect.any(Number),
+                    comment_count: expect.any(String),
+                    title: expect.any(String),
+                    topic: expect.any(String),
+                    author: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
                     
-    //             }))
-    //         })
+                }))
+            })
                
-    //         expect(articles).toBeSortedBy('created_at', {
-    //             descending: true
-    //           });
-    //     })
-    // })
+            expect(articles).toBeSortedBy('created_at', {
+                descending: true
+              });
+        })
+    })
      test('200 - returns articles with sorted_by=any valid column ', () => {
        return request(app)
         .get('/api/articles?sort_by=author')
@@ -128,14 +128,38 @@ describe.only('GET api/articles', () => {
             ])
          })
       })
-    //   test('404 - when provided non-existant topic keyword', () => {
-    //     return request(app)
-    //      .get('/api/articles?topic=dog')
-    //      .expect(404)
-    //      .then(({ body: { msg }}) => {
-    //          expect(msg).toBe('not found');
-    //      })
-    //   })
+      test('200 - accept multiple queries', () => {
+        return request(app)
+         .get('/api/articles?topic=mitch&sort_by=author&order=asc')
+         .expect(200)
+         .then(({ body: { articles }}) => {
+            expect(articles).toBeSortedBy('author', {
+                descending: false
+            })
+            articles.forEach((article) => {
+                expect(article).toEqual(expect.objectContaining(
+                    {
+                    article_id: expect.any(Number),
+                    title: expect.any(String),
+                    topic: "mitch",
+                    author: expect.any(String),
+                    comment_count: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                  })
+                )
+                
+             })
+         })
+      })
+      test('404 - when provided non-existant topic keyword', () => {
+        return request(app)
+         .get('/api/articles?topic=dog')
+         .expect(404)
+         .then(({ body: { msg }}) => {
+             expect(msg).toBe('not found');
+         })
+      })
       
 
 })
