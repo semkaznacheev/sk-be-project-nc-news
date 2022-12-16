@@ -115,17 +115,20 @@ describe('GET api/articles', () => {
          .get('/api/articles?topic=cats')
          .expect(200)
          .then(({ body: { articles }}) => {
-             expect(articles).toEqual([
-                {
-                article_id: 5,
-                title: "UNCOVERED: catspiracy to bring down democracy",
-                topic: "cats",
-                author: "rogersop",
-                comment_count: "2",
-                created_at: "2020-08-03T13:14:00.000Z",
-                votes: 0,
-              }
-            ])
+            articles.forEach((article) => {
+                expect(article).toEqual(expect.objectContaining(
+                    {
+                    article_id: expect.any(Number),
+                    title: expect.any(String),
+                    topic: "cats",
+                    author: expect.any(String),
+                    comment_count: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                  })
+                )
+                
+             })
          })
       })
       test('200 - accept multiple queries', () => {
