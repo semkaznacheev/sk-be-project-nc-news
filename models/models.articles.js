@@ -28,7 +28,13 @@ const selectArticles = (sort_by = 'created_at', order = 'desc', topic) => {
 
 const selectArticleById = (article_id) => {
 
-  return db.query(`SELECT * FROM articles WHERE article_id = $1 ;`, [article_id])
+  return db.query(`SELECT articles.article_id, title, topic, articles.author, articles.created_at, articles.votes, articles.body, 
+   COUNT(comments.comment_id) AS comment_count
+   FROM articles 
+   LEFT JOIN comments ON comments.article_id = articles.article_id
+   WHERE articles.article_id = $1
+   GROUP BY articles.article_id
+   ;`, [article_id])
   .then((results) => {
     if (results.rowCount === 0) {
         return Promise.reject({msg: "not found", status: 404 })
