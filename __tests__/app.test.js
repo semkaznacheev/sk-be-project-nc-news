@@ -440,3 +440,11 @@ describe('GET api/users', () => {
         })
     })
 })
+
+describe('DELETE api/comments/comment_id', () => {
+    test('204 - responds with no content', () => {
+        return request(app)
+        .delete('/api/comments/1')
+        .expect(204)
+    })
+})

@@ -19,6 +19,14 @@ const addNewComment = (req) => {
     })
 }
 
+const removeComment = (comment_id) => {
+
+  return db.query(` DELETE FROM comments WHERE comment_id = $1 ; `, [comment_id])
+  .then(() => {
+    return {msg: 'No content'};
+
+  })
+}
 
 
 
@@ -30,4 +38,5 @@ const addNewComment = (req) => {
 
 
 
-module.exports = { selectCommentsById, addNewComment }
+
+module.exports = { selectCommentsById, addNewComment, removeComment}
