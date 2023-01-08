@@ -22,7 +22,10 @@ const addNewComment = (req) => {
 const removeComment = (comment_id) => {
 
   return db.query(` DELETE FROM comments WHERE comment_id = $1 ; `, [comment_id])
-  .then(() => {
+  .then((result) => {
+    if (result.rowCount === 0) {
+      return Promise.reject({msg: "not found", status: 404})
+    }
     return {msg: 'No content'};
 
   })
