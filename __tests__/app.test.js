@@ -465,3 +465,13 @@ describe('DELETE api/comments/comment_id', () => {
         })
    })
 })
+describe('GET api', () => {
+    test('200', () => {
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then((response) => {
+            console.log(response)
+        })
+    })
+})
