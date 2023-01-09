@@ -471,7 +471,8 @@ describe('GET api', () => {
         .get('/api')
         .expect(200)
         .then((response) => {
-            console.log(response)
+            console.log(response
+                )
         })
     })
 })
