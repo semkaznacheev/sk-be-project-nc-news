@@ -1,7 +1,7 @@
 const db = require('../db/connection.js');
 
 const selectArticles = (sort_by = 'created_at', order = 'desc', topic) => {
-  const validSortByQueries = ['title', 'topic', 'author', 'body', 'created_at', 'votes', 'article_id'];
+  const validSortByQueries = ['title', 'topic', 'author', 'body', 'created_at', 'votes', 'article_id', 'comment_count'];
   const validOrderByQueries = ['asc', 'desc'];
 
   if (!validSortByQueries.includes(sort_by) || !validOrderByQueries.includes(order)){
