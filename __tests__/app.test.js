@@ -465,3 +465,14 @@ describe('DELETE api/comments/comment_id', () => {
         })
    })
 })
+describe('GET api', () => {
+    test('200', () => {
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then((response) => {
+            const result = response.body.endpoints["GET /api"].description
+            expect(result).toBe("serves up a json representation of all the available endpoints of the api")
+        })
+    })
+})
