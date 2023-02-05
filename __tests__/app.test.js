@@ -471,8 +471,8 @@ describe('GET api', () => {
         .get('/api')
         .expect(200)
         .then((response) => {
-            console.log(response
-                )
+            const result = response.body.endpoints["GET /api"].description
+            expect(result).toBe("serves up a json representation of all the available endpoints of the api")
         })
     })
 })
